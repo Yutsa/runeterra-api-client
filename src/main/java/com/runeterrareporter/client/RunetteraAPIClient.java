@@ -12,20 +12,34 @@ import okhttp3.Response;
 
 public class RunetteraAPIClient {
 
-    public static final String API_KEY = "RGAPI-a0e45947-3f97-4036-91ab-43cf987e0d89";
     public static final String ENDPOINT_GET_ACCOUNT = "riot/account/v1/accounts/by-riot-id";
 
+    private String apiKey;
     private final OkHttpClient client;
     private final ObjectMapper mapper;
 
-    public RunetteraAPIClient(OkHttpClient httpClient, ObjectMapper mapper) {
+    public RunetteraAPIClient(OkHttpClient httpClient, ObjectMapper mapper, String apiKey) {
         this.client = httpClient;
         this.mapper = mapper;
+        this.apiKey = apiKey;
+    }
+    
+    public RunetteraAPIClient() {
+        this(new OkHttpClient(), new ObjectMapper());
+    }
+
+    public RunetteraAPIClient(OkHttpClient httpClient, ObjectMapper mapper) {
+        this(httpClient, mapper, null);
+    }
+    
+    public RunetteraAPIClient withAPIKey(String apiKey) {
+        this.apiKey = apiKey;
+        return this;
     }
 
     public User getUser(String gameName, String tagLine) throws IOException {
         Request request = RiotAPIRequestBuilder.createRequest()
-                .apiKey(API_KEY)
+                .apiKey(apiKey)
                 .addToUrl(ENDPOINT_GET_ACCOUNT)
                 .addToUrl(gameName)
                 .addToUrl(tagLine)
@@ -41,7 +55,7 @@ public class RunetteraAPIClient {
     
     public String getLatestMatchIDs(User user) throws IOException {
         Request request = RiotAPIRequestBuilder.createRequest()
-                .apiKey(API_KEY)
+                .apiKey(apiKey)
                 .addToUrl("lor/match/v1/matches/by-puuid")
                 .addToUrl(user.puuid())
                 .addToUrl("ids")
