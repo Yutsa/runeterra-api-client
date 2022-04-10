@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
-class TestRunetteraAPIClient {
+class TestITRunetteraAPIClient {
 
     private static final String PUUID = "Ijz744loi9w2xsvT4FP-C-Cq_DRp-Q4nFFnEywhBzW_FQB-RDjNiVGmy6rnLq_eFVyyZRtVqP70O8g";
     private final String apiKey = getAPIKey();
@@ -50,7 +50,8 @@ class TestRunetteraAPIClient {
     void should_get_the_last_match_ids_from_a_user() throws IOException {
         RunetteraAPIClient runetteraAPIClient = new RunetteraAPIClient().withAPIKey(apiKey);
         User user = runetteraAPIClient.getUser("Yutsa", "EUW");
-        String latestMatchIDs = runetteraAPIClient.getLatestMatchIDs(user);
-        assertThat(latestMatchIDs).isNotNull();
+        var latestMatchIDs = runetteraAPIClient.getLatestMatchIDs(user);
+        assertThat(latestMatchIDs).isNotEmpty();
+        assertThat(latestMatchIDs).hasSize(20);
     }
 }

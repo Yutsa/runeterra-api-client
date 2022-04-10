@@ -5,6 +5,9 @@ import com.runeterrareporter.user.User;
 import com.runeterrareporter.user.UserNotFoundException;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -53,7 +56,7 @@ public class RunetteraAPIClient {
         throw new UnknownAPIIssueException(response.message());
     }
     
-    public String getLatestMatchIDs(User user) throws IOException {
+    public List<String> getLatestMatchIDs(User user) throws IOException {
         Request request = RiotAPIRequestBuilder.createRequest()
                 .apiKey(apiKey)
                 .addToUrl("lor/match/v1/matches/by-puuid")
@@ -62,8 +65,8 @@ public class RunetteraAPIClient {
                 .build();
         Response response = client.newCall(request).execute();
         if (response.isSuccessful()) {
-            return response.body().string();
+            return Arrays.asList(mapper.readValue(response.body().string(), String[].class));
         }
-        return "";
+        return Collections.emptyList();
     }
 }
