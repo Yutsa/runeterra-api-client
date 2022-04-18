@@ -1,5 +1,6 @@
 package com.runeterrareporter.client;
 
+import com.runeterrareporter.match.MatchData;
 import com.runeterrareporter.user.User;
 import com.runeterrareporter.user.UserNotFoundException;
 
@@ -40,9 +41,9 @@ class TestITRunetteraAPIClient {
 
     @Test
     void should_throw_UserNotFoundException_for_a_unknown_user() {
-        assertThatThrownBy(() -> new RunetteraAPIClient()
-                .withAPIKey(apiKey)
-                .getUser("jjreifjr", "EUW"))
+        RunetteraAPIClient runetteraAPIClient = new RunetteraAPIClient()
+                .withAPIKey(apiKey);
+        assertThatThrownBy(() -> runetteraAPIClient.getUser("jjreifjr", "EUW"))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
@@ -51,7 +52,13 @@ class TestITRunetteraAPIClient {
         RunetteraAPIClient runetteraAPIClient = new RunetteraAPIClient().withAPIKey(apiKey);
         User user = runetteraAPIClient.getUser("Yutsa", "EUW");
         var latestMatchIDs = runetteraAPIClient.getLatestMatchIDs(user);
-        assertThat(latestMatchIDs).isNotEmpty();
-        assertThat(latestMatchIDs).hasSize(20);
+        assertThat(latestMatchIDs).isNotEmpty().hasSize(20);
+    }
+
+    @Test
+    void should_get_the_match_data() throws IOException {
+        MatchData matchData = new RunetteraAPIClient().withAPIKey(apiKey)
+                .getMatchData("1b538875-e19b-4150-9fc3-ae083ed300d9");
+        assertThat(matchData).isNotNull();
     }
 }

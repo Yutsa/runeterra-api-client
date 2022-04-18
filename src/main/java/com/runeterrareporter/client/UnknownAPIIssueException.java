@@ -1,7 +1,9 @@
 package com.runeterrareporter.client;
 
+/**
+ * Exception class that handles unexpected error code with the Runeterra API.
+ */
 public class UnknownAPIIssueException extends RuntimeException {
-
     public UnknownAPIIssueException(String message) {
         super(message);
     }
