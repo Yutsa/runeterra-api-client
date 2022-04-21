@@ -12,6 +12,7 @@ import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 
 class TestITRunetteraAPIClient {
@@ -59,6 +60,11 @@ class TestITRunetteraAPIClient {
     void should_get_the_match_data() throws IOException {
         MatchData matchData = new RunetteraAPIClient().withAPIKey(apiKey)
                 .getMatchData("1b538875-e19b-4150-9fc3-ae083ed300d9");
-        assertThat(matchData).isNotNull();
+        assertSoftly(softly -> {
+            softly.assertThat(matchData).isNotNull();
+            softly.assertThat(matchData.gameMode()).isEqualTo("Constructed");
+            softly.assertThat(matchData.gameType()).isEqualTo("Ranked");
+        });
+
     }
 }

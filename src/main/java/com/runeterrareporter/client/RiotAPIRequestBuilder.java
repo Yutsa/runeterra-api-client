@@ -1,9 +1,8 @@
 package com.runeterrareporter.client;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
-
-import okhttp3.HttpUrl;
-import okhttp3.Request;
 
 /**
  * Builder for the HTTP request to the Runeterra API.
@@ -11,13 +10,10 @@ import okhttp3.Request;
  * It handles building the URL and the headers with the API key.
  */
 class RiotAPIRequestBuilder {
-    private final Request.Builder requestBuilder = new Request.Builder()
-            .addHeader("Accept", "application/json; q=0.5");
-
-    private final HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
-            .scheme("https")
-            .host("europe.api.riotgames.com");
-
+    private final UrlBuilder urlBuilder = UrlBuilder.withBaseUrl("https://europe.api.riotgames.com");
+    
+    private String apiKey;
+    
     public static RiotAPIRequestBuilder createRequest() {
         return new RiotAPIRequestBuilder();
     }
@@ -28,7 +24,7 @@ class RiotAPIRequestBuilder {
      * @return An instance of the current {@link RiotAPIRequestBuilder}.
      */
     public RiotAPIRequestBuilder apiKey(String apiKey) {
-        requestBuilder.addHeader("X-Riot-Token", apiKey);
+        this.apiKey = apiKey;
         return this;
     }
 
@@ -38,17 +34,15 @@ class RiotAPIRequestBuilder {
      * @return An instance of the current {@link RiotAPIRequestBuilder}.
      */
     public RiotAPIRequestBuilder addToUrl(String urlPart) {
-        urlBuilder.addPathSegments(urlPart);
+        urlBuilder.addPath(urlPart);
         return this;
     }
-
-    /**
-     * Builds the {@link Request} object to be used to query the Riot API.
-     * @return a {@link Request} object to be used to query the Riot API.
-     */
-    public Request build() {
-        URL url = urlBuilder.build().url();
-        requestBuilder.url(url);
-        return requestBuilder.build();
+    
+    public RiotAPIResponse buildUrlConnection() throws IOException {
+        URL url = urlBuilder.build();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("X-Riot-Token", apiKey);
+        connection.setRequestProperty("Accept", "application/json");
+        return new RiotAPIResponse(connection);
     }
 }
