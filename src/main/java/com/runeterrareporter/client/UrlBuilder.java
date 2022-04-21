@@ -3,7 +3,7 @@ package com.runeterrareporter.client;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class UrlBuilder {
+class UrlBuilder {
     public static final String PATH_DELIMITER = "/";
     private String url;
 

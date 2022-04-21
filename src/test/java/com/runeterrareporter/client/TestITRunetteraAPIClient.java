@@ -10,6 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import static com.runeterrareporter.match.GameMode.CONSTRUCTED;
+import static com.runeterrareporter.match.GameOutcome.LOSS;
+import static com.runeterrareporter.match.GameOutcome.WIN;
+import static com.runeterrareporter.match.GameType.RANKED;
+import static com.runeterrareporter.match.OrderOfPlay.FIRST;
+import static com.runeterrareporter.match.OrderOfPlay.SECOND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
@@ -62,8 +68,21 @@ class TestITRunetteraAPIClient {
                 .getMatchData("1b538875-e19b-4150-9fc3-ae083ed300d9");
         assertSoftly(softly -> {
             softly.assertThat(matchData).isNotNull();
-            softly.assertThat(matchData.gameMode()).isEqualTo("Constructed");
-            softly.assertThat(matchData.gameType()).isEqualTo("Ranked");
+            softly.assertThat(matchData.gameMode()).isEqualTo(CONSTRUCTED);
+            softly.assertThat(matchData.gameType()).isEqualTo(RANKED);
+            softly.assertThat(matchData.gameStartTime()).isEqualTo("2022-04-10T08:49:42.1638989+00:00");
+            softly.assertThat(matchData.gameVersion()).isEqualTo("live_3_04_11");
+            softly.assertThat(matchData.totalTurnCount()).isEqualTo(25);
+
+            softly.assertThat(matchData.players()[0].deckCode()).isEqualTo("CQCQCAYCAUAQIAQPAECQUOQCAUBAIGQFAEBAQCYMFQZAGAIEA6FACAIFAIKQEAICGE4QEAICAIFACAYCCQ");
+            softly.assertThat(matchData.players()[0].puuid()).isEqualTo("Ijz744loi9w2xsvT4FP-C-Cq_DRp-Q4nFFnEywhBzW_FQB-RDjNiVGmy6rnLq_eFVyyZRtVqP70O8g");
+            softly.assertThat(matchData.players()[0].gameOutcome()).isEqualTo(WIN);
+            softly.assertThat(matchData.players()[0].orderOfPlay()).isEqualTo(SECOND);
+
+            softly.assertThat(matchData.players()[1].deckCode()).isEqualTo("CMBQEAICAYVAIBACAQCQQCIEAQDQGGQ4GMBQCAICBQAQIAQLAICAOXLSAIAQCARRAEBQEFA");
+            softly.assertThat(matchData.players()[1].puuid()).isEqualTo("lvBGJFSMcvjBPUwsTNgFF2scHhazTCzj8BULoPtAAbM2AlfPLgRrvt6D6mVGIurscdi36eS5fqyiFw");
+            softly.assertThat(matchData.players()[1].gameOutcome()).isEqualTo(LOSS);
+            softly.assertThat(matchData.players()[1].orderOfPlay()).isEqualTo(FIRST);
         });
 
     }

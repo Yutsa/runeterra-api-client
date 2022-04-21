@@ -1,6 +1,9 @@
 package com.runeterrareporter.client;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.runeterrareporter.match.MatchData;
 import com.runeterrareporter.user.User;
 import com.runeterrareporter.user.UserNotFoundException;
@@ -31,7 +34,10 @@ public class RunetteraAPIClient {
     }
 
     public RunetteraAPIClient() {
-        this(new ObjectMapper());
+        this(JsonMapper.builder()
+                .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+                .addModule(new JavaTimeModule())
+                .build());
     }
 
     public RunetteraAPIClient withAPIKey(String apiKey) {
